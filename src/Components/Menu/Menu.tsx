@@ -6,7 +6,7 @@ export const Menu = () => {
   return (
     <ul className="Menu">
       <MenuItem linkTo="/" text="Orders" />
-      <MenuItem linkTo="/dashboard" text="Dashboard" />
+      <MenuItem linkTo="/clients" text="Clients" />
       <MenuItem linkTo="/statistics" text="Statistics" />
       <MenuItem linkTo="/wallet" text="Wallet" />
     </ul>

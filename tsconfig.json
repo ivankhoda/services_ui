@@ -12,7 +12,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react"
+    "jsx": "react",
+    "noImplicitAny": false,
+    "strictNullChecks": true
   },
   "typeRoots": ["node_modules/@types", "custom_typings/"],
   "include": ["src", "coverage"],
