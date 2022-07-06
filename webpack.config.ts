@@ -32,6 +32,10 @@ const config = {
           "sass-loader",
         ],
       },
+      {
+        test: /\.css$/i,
+        use: ["css-loader"],
+      },
     ],
   },
   resolve: {
