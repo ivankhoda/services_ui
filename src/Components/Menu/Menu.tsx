@@ -8,7 +8,7 @@ export const Menu = () => {
       <MenuItem linkTo="/" text="Orders" />
       <MenuItem linkTo="/clients" text="Clients" />
       <MenuItem linkTo="/assignees" text="Assignees" />
-      <MenuItem linkTo="/wallet" text="Wallet" />
+      <MenuItem linkTo="/categories" text="Categories" />
     </ul>
   );
 };
