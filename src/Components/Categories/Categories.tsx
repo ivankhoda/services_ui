@@ -11,11 +11,11 @@ const Paper: React.FC<PropsWithChildren<PaperProps>> = ({ children }) => {
 
 export const Categories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [title, setTitle] = useState("");
+
   const [visible, setVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [modalText, setModalText] = useState("Please input category name and surname");
+  const [modalText, setModalText] = useState("Please input category title.");
 
   const showModal = () => {
     setVisible(true);
@@ -26,11 +26,9 @@ export const Categories = () => {
   };
 
   const handleNameInput = (e: ChangeEvent<HTMLInputElement>) => {
-    setFirstName(e.currentTarget.value);
+    setTitle(e.currentTarget.value);
   };
-  const handleSurnameInput = (e: ChangeEvent<HTMLInputElement>) => {
-    setLastName(e.currentTarget.value);
-  };
+
   useEffect(() => {
     const getData = async () => {
       const categories = await fetch("http://localhost:3000/categories", {
@@ -55,7 +53,7 @@ export const Categories = () => {
 
   const onSubmit = () => {
     axios
-      .post(`http://localhost:3000/category/`, { category: { title: firstName } })
+      .post(`http://localhost:3000/category/`, { category: { title: title } })
       .then((res) => {
         const newCategory: Category = res.data.message;
         setCategories([...categories, newCategory]);
@@ -86,17 +84,9 @@ export const Categories = () => {
                   required
                   minLength={1}
                   maxLength={20}
-                  placeholder="Input name..."
-                  defaultValue={firstName}
+                  placeholder="Input title..."
+                  defaultValue={title}
                   onChange={handleNameInput}
-                ></Input>
-                <Input
-                  required
-                  minLength={1}
-                  maxLength={20}
-                  placeholder="Input surname..."
-                  defaultValue={lastName}
-                  onChange={handleSurnameInput}
                 ></Input>
               </Modal>
             </>

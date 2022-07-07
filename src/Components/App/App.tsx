@@ -7,6 +7,7 @@ import { Categories } from "../Categories/Categories";
 import { Clients } from "../Clients/Clients";
 import { Header } from "../Header/Header";
 import { Orders } from "../Orders/Orders";
+import { Services } from "../Services/Services";
 import { Sidebar } from "../Sidebar/Sidebar";
 import { WorkingPanel } from "../WorkingPanel/WorkingPanel";
 import "./App.style.scss";
@@ -17,6 +18,7 @@ export const App = () => {
     { path: "/clients", name: "Clients", Component: <Clients /> },
     { path: "/assignees", name: "Assignees", Component: <Assignees /> },
     { path: "/categories", name: "Categories", Component: <Categories /> },
+    { path: "/services", name: "Services", Component: <Services /> },
   ];
   return (
     <div className="App">
