@@ -1,24 +1,21 @@
 import { Button, Input, Modal } from "antd";
 import axios from "axios";
 import React, { ChangeEvent, PropsWithChildren, ReactElement, useEffect, useState } from "react";
-import { Client, ClientForm } from "../ClientsForm/ClientForm";
+import { Assignee, AssigneeForm } from "./AssigneeForm";
 interface PaperProps {
   children: ReactElement;
 }
 const Paper: React.FC<PropsWithChildren<PaperProps>> = ({ children }) => {
   return <div className="paper">{children}</div>;
 };
-export type Clients = {
-  clients: Client[] | undefined;
-};
 
-export const Clients = () => {
-  const [clients, setClients] = useState<Client[]>([]);
+export const Assignees = () => {
+  const [assignees, setAssignees] = useState<Assignee[]>([]);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [visible, setVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [modalText, setModalText] = useState("Please input customer name and surname");
+  const [modalText, setModalText] = useState("Please input assignee name and surname");
 
   const showModal = () => {
     setVisible(true);
@@ -34,35 +31,34 @@ export const Clients = () => {
   const handleSurnameInput = (e: ChangeEvent<HTMLInputElement>) => {
     setLastName(e.currentTarget.value);
   };
-
   useEffect(() => {
     const getData = async () => {
-      const clients = await fetch("http://localhost:3000/clients", {
+      const assignees = await fetch("http://localhost:3000/assignees", {
         method: "GET",
       });
-      const data = await clients.json();
-      setClients(data.clients);
+      const data = await assignees.json();
+      setAssignees(data.assignees);
     };
 
     getData();
   }, []);
 
-  const onDelete = (clickedItem: Client) => {
-    const clientId = clickedItem.id;
+  const onDelete = (clickedItem: Assignee) => {
+    const assigneeId = clickedItem.id;
     axios
-      .delete(`http://localhost:3000/client/${clientId}`)
+      .delete(`http://localhost:3000/assignee/${assigneeId}`)
       .then((res) => {})
       .catch((err) => console.log(err));
-    const newArray = clients?.filter((item) => item.id !== clickedItem.id);
-    setClients(newArray);
+    const newArray = assignees?.filter((item) => item.id !== clickedItem.id);
+    setAssignees(newArray);
   };
 
   const onSubmit = () => {
     axios
-      .post(`http://localhost:3000/client/`, { client: { name: firstName, surname: lastName } })
+      .post(`http://localhost:3000/assignee/`, { assignee: { name: firstName, surname: lastName } })
       .then((res) => {
-        const newClient: Client = res.data.message;
-        setClients([...clients, newClient]);
+        const newAssignee: Assignee = res.data.message;
+        setAssignees([...assignees, newAssignee]);
       })
       .catch((err) => console.log(err));
     setVisible(false);
@@ -75,7 +71,7 @@ export const Clients = () => {
           <div>
             <>
               <Button type="primary" onClick={showModal}>
-                Create new Client
+                Create new Assignee
               </Button>
               <Modal
                 title="Add new customer"
@@ -104,9 +100,9 @@ export const Clients = () => {
                 ></Input>
               </Modal>
             </>
-            {clients ? (
-              clients?.map((client) => (
-                <ClientForm
+            {assignees ? (
+              assignees?.map((client) => (
+                <AssigneeForm
                   key={client.id}
                   id={client.id}
                   name={client.name}

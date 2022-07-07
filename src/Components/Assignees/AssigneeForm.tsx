@@ -1,7 +1,7 @@
 import { Button, Col, Input, Row } from "antd";
 import axios from "axios";
 import React, { ChangeEvent, useState } from "react";
-export type Client = {
+export type Assignee = {
   name: string;
   surname: string;
   id: number;
@@ -10,13 +10,13 @@ type TableProps = {
   id: number;
   name: string;
   surname: string;
-  item: Client;
+  item: Assignee;
   editable: boolean;
 
-  handleDelete: (item: Client) => void;
+  handleDelete: (item: Assignee) => void;
 };
 
-export const ClientForm = (props: TableProps) => {
+export const AssigneeForm = (props: TableProps) => {
   const { id, name, surname, item, handleDelete, editable } = props;
   const [notEditable, setEditable] = useState(editable);
   const [firstName, setFirstName] = useState(name);
@@ -31,10 +31,10 @@ export const ClientForm = (props: TableProps) => {
   const handleSurnameInput = (e: ChangeEvent<HTMLInputElement>) => {
     setLastName(e.currentTarget.value);
   };
-  const onSave = (clickedItem: Client) => {
-    const clientId = clickedItem.id;
+  const onSave = (clickedItem: Assignee) => {
+    const assigneeId = clickedItem.id;
     axios
-      .patch(`http://localhost:3000/client/${clientId}`, { client: { name: firstName, surname: lastName } })
+      .patch(`http://localhost:3000/assignee/${assigneeId}`, { assignee: { name: firstName, surname: lastName } })
       .then((res) => {
         console.log(res.data);
       })

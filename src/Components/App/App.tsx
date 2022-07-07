@@ -2,11 +2,11 @@ import React from "react";
 import { Route, Routes } from "react-router";
 import { HashRouter } from "react-router-dom";
 import "../../style.scss";
+import { Assignees } from "../Assignees/Assignees";
 import { Clients } from "../Clients/Clients";
 import { Header } from "../Header/Header";
 import { Orders } from "../Orders/Orders";
 import { Sidebar } from "../Sidebar/Sidebar";
-import { Statistics } from "../Statistics/Statistics";
 import { Wallet } from "../Wallet/Wallet";
 import { WorkingPanel } from "../WorkingPanel/WorkingPanel";
 import "./App.style.scss";
@@ -15,7 +15,7 @@ export const App = () => {
   const routes = [
     { path: "/", name: "Orders", Component: <Orders /> },
     { path: "/clients", name: "Clients", Component: <Clients /> },
-    { path: "/statistics", name: "Statistics", Component: <Statistics /> },
+    { path: "/Assignees", name: "Assignees", Component: <Assignees /> },
     { path: "/wallet", name: "Wallet", Component: <Wallet /> },
   ];
   return (
