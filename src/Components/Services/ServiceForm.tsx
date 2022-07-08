@@ -47,7 +47,7 @@ export const ServiceForm = (props: TableProps) => {
   const onSave = (clickedItem: Service) => {
     const serviceId = clickedItem.id;
     axios
-      .patch(`http://localhost:3000/service/${serviceId}`, {
+      .patch(`http://localhost:3000/generic-service/${serviceId}`, {
         service: { title: serviceTitle, service_category: serviceCategoryTitle },
       })
       .then((res) => {

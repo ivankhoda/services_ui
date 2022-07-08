@@ -31,12 +31,10 @@ export const Services = () => {
   const handleServiceTitleInput = (e: ChangeEvent<HTMLInputElement>) => {
     setServiceTitle(e.currentTarget.value);
   };
-  const handleServiceCategoryInput = (e: ChangeEvent<HTMLInputElement>) => {
-    setServiceCategory(e.currentTarget.value);
-  };
+
   useEffect(() => {
     const getData = async () => {
-      const services = await fetch("http://localhost:3000/services", {
+      const services = await fetch("http://localhost:3000/generic-services", {
         method: "GET",
       });
       const categories = await fetch("http://localhost:3000/categories", {
@@ -46,7 +44,7 @@ export const Services = () => {
       setCategories(categoriesData.categories);
 
       const servicesData = await services.json();
-      setServices(servicesData.services);
+      setServices(servicesData.generic_services);
     };
 
     getData();
@@ -55,7 +53,7 @@ export const Services = () => {
   const onDelete = (clickedItem: Service) => {
     const serviceId = clickedItem.id;
     axios
-      .delete(`http://localhost:3000/service/${serviceId}`)
+      .delete(`http://localhost:3000/generic-service/${serviceId}`)
       .then((res) => {})
       .catch((err) => console.log(err));
     const newArray = services?.filter((item) => item.id !== clickedItem.id);
@@ -64,7 +62,7 @@ export const Services = () => {
 
   const onSubmit = () => {
     axios
-      .post(`http://localhost:3000/service/`, {
+      .post(`http://localhost:3000/generic-service/`, {
         service: { title: serviceTitle, service_category: serviceCategoryTitle },
       })
       .then((res) => {
@@ -75,6 +73,7 @@ export const Services = () => {
       .catch((err) => console.log(err));
     setVisible(false);
   };
+
   const handleSelect = (value) => {
     setServiceCategoryTitle(value);
   };
