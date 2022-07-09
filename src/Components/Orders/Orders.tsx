@@ -1,20 +1,21 @@
-import { Button, Input, Modal, Select, Table } from "antd";
+import { Button, Checkbox, Col, Input, Modal, Row, Select } from "antd";
+import axios from "axios";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { Assignee } from "../Assignees/AssigneeForm";
 import { Category } from "../Categories/CategoryForm";
 import { Client } from "../ClientsForm/ClientForm";
+import { Service } from "../Services/ServiceForm";
 import { Order, OrderAttributes, OrderForm } from "./OrderForm";
-type Service = {
-  category_id: number;
-
-  title: "Durable durabls";
+export type GenericService = {
+  id: number;
+  title: string;
+  category_title: string;
+  category_id: string;
 };
 
 export const Orders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [serviceTitle, setServiceTitle] = useState("");
-  const [serviceCategory, setServiceCategory] = useState("");
-  const [serviceCategoryTitle, setServiceCategoryTitle] = useState("");
+
   const [visible, setVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState("Please input service title");
@@ -23,41 +24,34 @@ export const Orders = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const { Option } = Select;
+
+  const [customer, setCustomer] = useState<Client>();
+  const [assignee, setAssignee] = useState<Assignee>();
+  const [amount, setAmount] = useState<Number>();
+  const [orderServices, setOrderService] = useState<Service[]>([]);
+
+  const [genericService, setGenericServices] = useState<GenericService[]>([]);
+
   useEffect(() => {
     const getData = async () => {
       const orders = await fetch("http://localhost:3000/orders", {
         method: "GET",
       });
+
       const data = await orders.json();
       setOrders(data.data);
-    };
 
-    getData();
-  }, []);
-  useEffect(() => {
-    const getData = async () => {
       const clients = await fetch("http://localhost:3000/clients", {
         method: "GET",
       });
-      const data = await clients.json();
-      setClients(data.clients);
-    };
+      const clientsData = await clients.json();
+      setClients(clientsData.clients);
 
-    getData();
-  }, []);
-  useEffect(() => {
-    const getData = async () => {
       const assignees = await fetch("http://localhost:3000/assignees", {
         method: "GET",
       });
-      const data = await assignees.json();
-      setAssignees(data.assignees);
-    };
-
-    getData();
-  }, []);
-  useEffect(() => {
-    const getData = async () => {
+      const assigneeData = await assignees.json();
+      setAssignees(assigneeData.assignees);
       const services = await fetch("http://localhost:3000/generic-services", {
         method: "GET",
       });
@@ -68,7 +62,7 @@ export const Orders = () => {
       setCategories(categoriesData.categories);
 
       const servicesData = await services.json();
-      setServices(servicesData.generic_services);
+      setGenericServices(servicesData.generic_services);
     };
 
     getData();
@@ -81,34 +75,76 @@ export const Orders = () => {
   const handleCancel = () => {
     setVisible(false);
   };
-  const handleServiceTitleInput = (e: ChangeEvent<HTMLInputElement>) => {
-    setServiceTitle(e.currentTarget.value);
-  };
 
-  const columns = [
-    Table.EXPAND_COLUMN,
-    {
-      title: "Client name",
-      dataIndex: "client_name",
-    },
-    {
-      title: "Assignee name",
-      dataIndex: "assignee_name",
-    },
-    {
-      title: "Total sum",
-      dataIndex: "price",
-    },
-  ];
   let content: OrderAttributes[] = [];
   orders.forEach((order) => content.push(order.attributes));
 
   const onSubmit = () => {
+    const newCustomer = clients.find((c) => c.id === customer!.id);
+    const newAssignee = assignees.find((a) => a.id === assignee!.id);
+
+    const clientName = `${newCustomer!.name} ${newCustomer!.surname}`;
+    const assigneeName = `${newAssignee!.name} ${newAssignee!.surname}`;
+    console.log(orderServices);
+    axios
+      .post(`http://localhost:3000/order/`, {
+        order: {
+          client_name: clientName,
+          assignee_name: assigneeName,
+          price: amount,
+          client_id: newCustomer?.id,
+          assignee_id: newAssignee?.id,
+          positions: orderServices,
+        },
+      })
+      .then((res) => {
+        const order = res.data;
+
+        setOrders([...orders, order.data]);
+      })
+      .catch((err) => console.log(err));
+
     setVisible(false);
   };
 
-  const handleSelect = (value) => {
-    setServiceCategoryTitle(value);
+  const handleSelectCustomer = (value) => {
+    const newCustomer = clients.find((client) => client.id === value);
+
+    setCustomer({ name: newCustomer!.name, surname: newCustomer!.surname, id: newCustomer!.id });
+  };
+
+  const handleSelectAssignee = (value) => {
+    const newAssignee = assignees.find((assignee) => assignee.id === value);
+    console.log(newAssignee);
+    setAssignee({
+      name: newAssignee!.name,
+      surname: newAssignee!.surname,
+      id: newAssignee!.id,
+    });
+  };
+  const handleSelectService = (value) => {
+    const selectedServices: GenericService[] = [];
+    value.forEach((element) => {
+      const item = genericService.find((genericService) => genericService.id === element);
+      item ? selectedServices.push(item) : null;
+    });
+    setOrderService(selectedServices);
+  };
+
+  const handlePriceInput = (e: ChangeEvent<HTMLInputElement>) => {
+    setAmount(Number(e.target.value));
+  };
+
+  const onDelete = (clickedItem: OrderAttributes) => {
+    const orderId = clickedItem.id;
+    axios
+      .delete(`http://localhost:3000/order/${orderId}`)
+      .then((res) => {})
+      .catch((err) => console.log(err));
+    orders.forEach((o) => console.log(typeof o.id, typeof clickedItem.id));
+    const newArray = orders?.filter((order) => Number(order.id) !== clickedItem.id);
+
+    setOrders(newArray);
   };
 
   return (
@@ -123,54 +159,90 @@ export const Orders = () => {
           onOk={onSubmit}
           confirmLoading={confirmLoading}
           onCancel={handleCancel}
+          width={1000}
         >
           <p>{modalText}</p>
+          <Row>
+            <Col span={6}>
+              <Select
+                defaultValue={""}
+                placeholder={"Select customer"}
+                style={{
+                  width: 160,
+                }}
+                onChange={handleSelectCustomer}
+              >
+                {clients.map((client, i) => {
+                  return (
+                    <Option key={i} value={client.id}>
+                      {client.name} {client.surname}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </Col>
+            <Col span={6}>
+              <Select
+                defaultValue={""}
+                placeholder={"Select assignee"}
+                style={{
+                  width: 160,
+                }}
+                onChange={handleSelectAssignee}
+              >
+                {assignees.map((assignee, i) => {
+                  return (
+                    <Option key={i} value={assignee.id}>
+                      {assignee.name} {assignee.surname}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </Col>
+            <Col span={4}>
+              <Checkbox.Group
+                style={{
+                  width: "100%",
+                }}
+                onChange={handleSelectService}
+              >
+                <Col>
+                  {genericService.map((service, i) => {
+                    return (
+                      <Col span={8}>
+                        <Checkbox key={i} value={service.id}>
+                          {service.title}
+                        </Checkbox>
+                      </Col>
+                    );
+                  })}
+                </Col>
+              </Checkbox.Group>
+            </Col>
 
-          <Input
-            required
-            minLength={1}
-            maxLength={20}
-            placeholder="Input name..."
-            defaultValue={serviceTitle}
-            onChange={handleServiceTitleInput}
-          ></Input>
-
-          <Select
-            defaultValue={serviceCategoryTitle}
-            style={{
-              width: 120,
-            }}
-            onChange={handleSelect}
-          >
-            {categories ? (
-              categories.map((category, i) => {
-                return (
-                  <Option key={i} value={category.title}>
-                    {category.title}
-                  </Option>
-                );
-              })
-            ) : (
-              <>Nothing to display yet</>
-            )}
-          </Select>
+            <Col span={3}>
+              <Input type="number" placeholder="Enter price" defaultValue={0} onChange={handlePriceInput}></Input>
+            </Col>
+          </Row>
         </Modal>
       </>
 
       {content ? (
         content.map((order, i) => (
           <OrderForm
-            key={i}
-            id={1}
+            key={order.id}
+            id={order.id}
             client_name={order.client_name}
+            client_surname={order.client_surname}
             assignee_name={order.assignee_name}
+            assignee_surname={order.assignee_surname}
             services={order.services}
             price={order.price}
-            // item={order}
-            client_id={0}
-            assignee_id={0}
+            item={order}
+            client_id={order.client_id}
+            assignee_id={order.assignee_id}
             editable={false}
-            handleDelete={() => console.log("some")}
+            handleDelete={onDelete}
           />
         ))
       ) : (

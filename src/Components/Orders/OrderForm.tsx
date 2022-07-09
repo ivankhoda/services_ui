@@ -1,5 +1,6 @@
 import { Button, Col, Input, Row, Select } from "antd";
-import React, { useEffect, useState } from "react";
+import axios from "axios";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { Assignee } from "../Assignees/AssigneeForm";
 import { Client } from "../ClientsForm/ClientForm";
 
@@ -15,33 +16,41 @@ export type Order = {
 export type OrderAttributes = {
   id: number;
   client_name: string;
+  client_surname: string;
   services: Service[];
-  assignee_name: string;
+  item: OrderAttributes;
+  assignee_name?: string;
+  assignee_surname: string;
   price: number;
   client_id: number;
   assignee_id: number;
   editable: boolean;
-  // item: Order;
-  handleDelete: (item: Order) => void;
-};
-type TableProps = {
-  id: number;
-  title: string;
-  assigneeTitle: string;
-  item: Order;
-  editable: boolean;
 
-  handleDelete: (item: Order) => void;
+  handleDelete: (item: OrderAttributes) => void;
 };
 
 export const OrderForm = (props: OrderAttributes) => {
-  const { id, client_name, assignee_name, services, price, handleDelete, editable } = props;
+  const {
+    id,
+    client_name,
+    client_surname,
+    client_id,
+    assignee_name,
+    assignee_surname,
+    assignee_id,
+    services,
+    price,
+    item,
+    handleDelete,
+    editable,
+  } = props;
   const [notEditable, setEditable] = useState(editable);
-  // const [serviceTitle, setServiceTitle] = useState("title");
-  const [customer, setCustomer] = useState(client_name);
-  const [assignee, setAssignee] = useState(assignee_name);
-  // const [assignees, setCategories] = useState<assignee[]>([]);
-  // const [orders, setOrders] = useState<Order[]>([]);
+  const [customer, setCustomer] = useState({ client_name, client_surname, client_id });
+  const [assignee, setAssignee] = useState({ assignee_name, assignee_surname, assignee_id });
+  const [amount, setAmount] = useState(price);
+  const [orderServices, setOrderService] = useState(services);
+
+  const [orders, setOrders] = useState<Order[]>([]);
   const [clients, setClients] = useState<Client[]>([]);
   const [assignees, setAssignees] = useState<Assignee[]>([]);
   const [genericService, setGenericServices] = useState<Service[]>([]);
@@ -50,114 +59,116 @@ export const OrderForm = (props: OrderAttributes) => {
   const handleEdit = (notEditable: boolean) => {
     setEditable(!notEditable);
   };
-  // const handleNameInput = (e: ChangeEvent<HTMLInputElement>) => {
-  //   setServiceTitle(e.currentTarget.value);
-  // };
+  const handlePriceInput = (e: ChangeEvent<HTMLInputElement>) => {
+    setAmount(Number(e.currentTarget.value));
+  };
 
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     const orders = await fetch("http://localhost:3000/orders", {
-  //       method: "GET",
-  //     });
-  //     const data = await orders.json();
-  //     setOrders(data.data);
-  //   };
-
-  //   getData();
-  // }, []);
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     const clients = await fetch("http://localhost:3000/clients", {
-  //       method: "GET",
-  //     });
-  //     const data = await clients.json();
-  //     setClients(data.clients);
-  //   };
-
-  //   getData();
-  // }, []);
   useEffect(() => {
     const getData = async () => {
       const assignees = await fetch("http://localhost:3000/assignees", {
         method: "GET",
       });
-      const data = await assignees.json();
-      setAssignees(data.assignees);
-    };
-
-    getData();
-  }, []);
-  useEffect(() => {
-    const getData = async () => {
       const services = await fetch("http://localhost:3000/generic-services", {
         method: "GET",
       });
-      // const assignees = await fetch("http://localhost:3000/assignees", {
-      //   method: "GET",
-      // });
-      // const categoriesData = await assignees.json();
-      // setCategories(categoriesData.assignees);
-
+      const clients = await fetch("http://localhost:3000/clients", {
+        method: "GET",
+      });
+      const orders = await fetch("http://localhost:3000/orders", {
+        method: "GET",
+      });
+      const data = await assignees.json();
+      setAssignees(data.assignees);
       const servicesData = await services.json();
       setGenericServices(servicesData.generic_services);
+      const clientsData = await clients.json();
+      setClients(clientsData.clients);
+      const orderData = await orders.json();
+      setOrders(orderData.data);
     };
 
     getData();
   }, []);
 
   const onSave = (clickedItem) => {
-    const serviceId = clickedItem.id;
-    console.log(clickedItem);
-    // axios
-    //   .patch(`http://localhost:3000/generic-service/${serviceId}`, {
-    //     service: { title: serviceTitle, service_assignee: serviceassigneeTitle },
-    //   })
-    //   .then((res) => {
-    //     console.log(res.data);
-    //   })
-    //   .catch((err) => console.log(err));
+    const newCustomer = clients.find((c) => c.id === customer.client_id);
+    const newAssignee = assignees.find((a) => a.id === assignee.assignee_id);
+    const orderId = clickedItem.id;
+    const clientName = `${newCustomer!.name} ${newCustomer!.surname}`;
+    const assigneeName = `${newAssignee!.name} ${newAssignee!.surname}`;
+    console.log(orderServices);
+    axios
+      .patch(`http://localhost:3000/order/${orderId}`, {
+        order: {
+          client_name: clientName,
+          assignee_name: assigneeName,
+          price: amount,
+          client_id: newCustomer?.id,
+          assignee_id: newCustomer?.id,
+          positions: orderServices,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => console.log(err));
     setEditable(!notEditable);
   };
-  const handleSelect = (value) => {
-    // setServiceassigneeTitle(value);
-    console.log(value);
-  };
-  // console.log(customer);
+  const handleSelectCustomer = (value) => {
+    const newCustomer = clients.find((client) => client.id === value);
 
-  console.log(services, "services");
+    setCustomer({ client_name: newCustomer!.name, client_surname: newCustomer!.surname, client_id: newCustomer!.id });
+  };
+
+  const handleSelectAssignee = (value) => {
+    const newAssignee = assignees.find((assignee) => assignee.id === value);
+
+    setAssignee({
+      assignee_name: newAssignee!.name,
+      assignee_surname: newAssignee!.surname,
+      assignee_id: newAssignee!.id,
+    });
+  };
+  const handleSelectService = (value) => {
+    const selectedServices: Service[] = [];
+    const newService = genericService.find((service) => service.id === value);
+
+    newService ? selectedServices.push(newService) : null;
+    setOrderService([...orderServices, ...selectedServices]);
+  };
 
   return (
     <Row>
-      <Col span={4}>
+      <Col span={6}>
         <Select
-          defaultValue={customer}
+          defaultValue={customer.client_name}
           disabled={!notEditable ? true : false}
           style={{
             width: 160,
           }}
-          // onChange={handleSelect}
+          onChange={handleSelectCustomer}
         >
           {clients.map((client, i) => {
             return (
-              <Option key={i} value={client.name}>
-                {client.name} + {client.surname}
+              <Option key={i} value={client.id}>
+                {client.name} {client.surname}
               </Option>
             );
           })}
         </Select>
       </Col>
-      <Col span={4}>
+      <Col span={6}>
         <Select
-          defaultValue={assignee}
+          defaultValue={assignee.assignee_name}
           disabled={!notEditable ? true : false}
           style={{
             width: 160,
           }}
-          // onChange={handleSelect}
+          onChange={handleSelectAssignee}
         >
           {assignees.map((assignee, i) => {
             return (
-              <Option key={i} value={assignee.name}>
+              <Option key={i} value={assignee.id}>
                 {assignee.name} {assignee.surname}
               </Option>
             );
@@ -165,20 +176,20 @@ export const OrderForm = (props: OrderAttributes) => {
         </Select>
       </Col>
       <Col span={4}>
-        {services.map((s, i) => {
+        {orderServices?.map((s, i) => {
           return (
             <Select
               key={i}
               defaultValue={s.title}
               disabled={!notEditable ? true : false}
-              onChange={handleSelect}
+              onChange={handleSelectService}
               style={{
                 width: 160,
               }}
             >
               {genericService.map((service, i) => {
                 return (
-                  <Option key={i} value={service.title}>
+                  <Option key={i} value={service.id}>
                     {service.title}
                   </Option>
                 );
@@ -187,24 +198,21 @@ export const OrderForm = (props: OrderAttributes) => {
           );
         })}
       </Col>
-      <Col span={4}>
+      <Col span={3}>
         <Input
           type="text"
           readOnly={notEditable ? false : true}
-          defaultValue={price}
-          // onChange={handleNameInput}
+          defaultValue={amount}
+          onChange={handlePriceInput}
         ></Input>
       </Col>
 
-      <Col span="3">
-        <Button type="primary" onClick={notEditable ? () => onSave("ss") : () => handleEdit(notEditable)}>
+      <Col span={3}>
+        <Button type="primary" onClick={notEditable ? () => onSave(item) : () => handleEdit(notEditable)}>
           {notEditable ? "Save" : "Edit"}
         </Button>
 
-        <Button
-          type="primary"
-          // onClick={() => handleDelete(item)}
-        >
+        <Button type="primary" onClick={() => handleDelete(item)}>
           Delete
         </Button>
       </Col>
