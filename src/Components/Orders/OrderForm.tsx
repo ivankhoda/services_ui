@@ -104,7 +104,7 @@ export const OrderForm = (props: OrderAttributes) => {
           assignee_name: assigneeName,
           price: amount,
           client_id: newCustomer?.id,
-          assignee_id: newCustomer?.id,
+          assignee_id: newAssignee?.id,
           positions: orderServices,
         },
       })
@@ -130,11 +130,19 @@ export const OrderForm = (props: OrderAttributes) => {
     });
   };
   const handleSelectService = (value) => {
-    const selectedServices: Service[] = [];
-    const newService = genericService.find((service) => service.id === value);
+    console.log(orderServices);
+    console.log(value);
 
-    newService ? selectedServices.push(newService) : null;
-    setOrderService([...orderServices, ...selectedServices]);
+    // const selectedServices: Service[] = [];s
+    const newService = genericService.find((service) => service.id === value);
+    console.log(newService);
+    console.log(orderServices);
+    orderServices.find((orderService) => {
+      console.log(orderService.title, newService!.title);
+    });
+
+    // newService ? selectedServices.push(newService) : null;
+    // setOrderService([...orderServices, ...selectedServices]);
   };
 
   return (
