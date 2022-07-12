@@ -62,7 +62,7 @@ export const Services = () => {
 
   const onSubmit = () => {
     axios
-      .post(`${process.env.BASE_URL}/generic-service/`, {
+      .post(`${process.env.BASE_URL}/generic-service`, {
         service: { title: serviceTitle, service_category: serviceCategoryTitle },
       })
       .then((res) => {
