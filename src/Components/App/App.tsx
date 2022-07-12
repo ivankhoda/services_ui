@@ -11,6 +11,7 @@ import { Services } from "../Services/Services";
 import { Sidebar } from "../Sidebar/Sidebar";
 import { WorkingPanel } from "../WorkingPanel/WorkingPanel";
 import "./App.style.scss";
+require("dotenv").config();
 
 export const App = () => {
   const routes = [
