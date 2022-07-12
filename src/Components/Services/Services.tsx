@@ -63,7 +63,7 @@ export const Services = () => {
   const onSubmit = () => {
     axios
       .post(`${process.env.BASE_URL}/generic-service`, {
-        service: { title: serviceTitle, service_category: serviceCategoryTitle },
+        generic_service: { title: serviceTitle, service_category: serviceCategoryTitle },
       })
       .then((res) => {
         const newService: Service = res.data.service;
