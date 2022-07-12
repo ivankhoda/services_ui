@@ -71,6 +71,7 @@ const config = {
       },
     }),
     new Dotenv(),
+
     new DefinePlugin({
       "process.env.BASE_URL": JSON.stringify(process.env.BASE_URL),
     }),

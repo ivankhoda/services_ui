@@ -66,7 +66,7 @@ export const Services = () => {
         generic_service: { title: serviceTitle, service_category: serviceCategoryTitle },
       })
       .then((res) => {
-        const newService: Service = res.data.service;
+        const newService: Service = res.data.generic_service;
 
         setServices([...services, newService]);
       })
@@ -77,7 +77,9 @@ export const Services = () => {
   const handleSelect = (value) => {
     setServiceCategoryTitle(value);
   };
-
+  services.map((service) => {
+    console.log(service.id);
+  });
   return (
     <>
       <div>
@@ -127,9 +129,9 @@ export const Services = () => {
               </Modal>
             </>
             {services ? (
-              services?.map((service) => (
+              services?.map((service, i) => (
                 <ServiceForm
-                  key={service.id}
+                  key={i}
                   id={service.id}
                   title={service.title}
                   categoryTitle={service.category_title}
