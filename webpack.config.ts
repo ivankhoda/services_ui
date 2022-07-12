@@ -3,6 +3,7 @@ import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import path from "path";
+import { DefinePlugin } from "webpack";
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -70,6 +71,9 @@ const config = {
       },
     }),
     new Dotenv(),
+    new DefinePlugin({
+      "process.env.BASE_URL": JSON.stringify(process.env.BASE_URL),
+    }),
   ],
 };
 
