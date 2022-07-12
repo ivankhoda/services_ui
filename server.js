@@ -1,10 +1,11 @@
 //Install express server
 const express = require("express");
 const path = require("path");
-require("dotenv").config();
+
 const app = express();
 
 // Serve only the static files form the dist directory
+require("dotenv").config();
 app.use(express.static(__dirname + "/dist"));
 
 app.get("/*", function (req, res) {
