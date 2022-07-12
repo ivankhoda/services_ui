@@ -37,7 +37,7 @@ export const Services = () => {
       const services = await fetch(`${process.env.BASE_URL}/generic-services`, {
         method: "GET",
       });
-      const categories = await fetch(`${process.env.BASE_URL}categories`, {
+      const categories = await fetch(`${process.env.BASE_URL}/categories`, {
         method: "GET",
       });
       const categoriesData = await categories.json();
