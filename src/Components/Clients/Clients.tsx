@@ -37,7 +37,7 @@ export const Clients = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const clients = await fetch("http://localhost:3000/clients", {
+      const clients = await fetch(`${process.env.BASE_URL}/clients`, {
         method: "GET",
       });
       const data = await clients.json();
@@ -50,7 +50,7 @@ export const Clients = () => {
   const onDelete = (clickedItem: Client) => {
     const clientId = clickedItem.id;
     axios
-      .delete(`http://localhost:3000/client/${clientId}`)
+      .delete(`${process.env.BASE_URL}/client/${clientId}`)
       .then((res) => {})
       .catch((err) => console.log(err));
     const newArray = clients?.filter((item) => item.id !== clickedItem.id);
@@ -59,7 +59,7 @@ export const Clients = () => {
 
   const onSubmit = () => {
     axios
-      .post(`http://localhost:3000/client/`, { client: { name: firstName, surname: lastName } })
+      .post(`${process.env.BASE_URL}/client/`, { client: { name: firstName, surname: lastName } })
       .then((res) => {
         const newClient: Client = res.data.message;
         setClients([...clients, newClient]);

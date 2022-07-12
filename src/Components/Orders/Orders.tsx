@@ -36,7 +36,7 @@ export const Orders = () => {
   const [searchTerm, setSearchTerm] = useState("");
   useEffect(() => {
     const getData = async () => {
-      const orders = await fetch(`http://localhost:3000/orders?search_term=${searchTerm}`, {
+      const orders = await fetch(`${process.env.BASE_URL}/orders?search_term=${searchTerm}`, {
         method: "GET",
       });
       const data = await orders.json();
@@ -47,21 +47,21 @@ export const Orders = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const clients = await fetch("http://localhost:3000/clients", {
+      const clients = await fetch(`${process.env.BASE_URL}/clients`, {
         method: "GET",
       });
       const clientsData = await clients.json();
       setClients(clientsData.clients);
 
-      const assignees = await fetch("http://localhost:3000/assignees", {
+      const assignees = await fetch(`${process.env.BASE_URL}/assignees`, {
         method: "GET",
       });
       const assigneeData = await assignees.json();
       setAssignees(assigneeData.assignees);
-      const services = await fetch("http://localhost:3000/generic-services", {
+      const services = await fetch(`${process.env.BASE_URL}/generic-services`, {
         method: "GET",
       });
-      const categories = await fetch("http://localhost:3000/categories", {
+      const categories = await fetch(`${process.env.BASE_URL}/categories`, {
         method: "GET",
       });
       const categoriesData = await categories.json();
@@ -93,7 +93,7 @@ export const Orders = () => {
     const assigneeName = `${newAssignee!.name} ${newAssignee!.surname}`;
     console.log(orderServices);
     axios
-      .post(`http://localhost:3000/order/`, {
+      .post(`${process.env.BASE_URL}/order/`, {
         order: {
           client_name: clientName,
           assignee_name: assigneeName,
@@ -144,7 +144,7 @@ export const Orders = () => {
   const onDelete = (clickedItem: OrderAttributes) => {
     const orderId = clickedItem.id;
     axios
-      .delete(`http://localhost:3000/order/${orderId}`)
+      .delete(`${process.env.BASE_URL}/order/${orderId}`)
       .then((res) => {})
       .catch((err) => console.log(err));
     orders.forEach((o) => console.log(typeof o.id, typeof clickedItem.id));
@@ -205,7 +205,7 @@ export const Orders = () => {
       window.URL.revokeObjectURL(url);
     }
     const getData = async () => {
-      fetch(`http://localhost:3000/orders/export?search_term=${searchTerm}`, {
+      fetch(`${process.env.BASE_URL}/orders/export?search_term=${searchTerm}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/vnd.ms-excel",

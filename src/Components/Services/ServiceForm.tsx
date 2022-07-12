@@ -34,7 +34,7 @@ export const ServiceForm = (props: TableProps) => {
 
   useEffect(() => {
     const getData = async () => {
-      const categories = await fetch("http://localhost:3000/categories", {
+      const categories = await fetch(`${process.env.BASE_URL}/categories`, {
         method: "GET",
       });
       const data = await categories.json();
@@ -47,7 +47,7 @@ export const ServiceForm = (props: TableProps) => {
   const onSave = (clickedItem: Service) => {
     const serviceId = clickedItem.id;
     axios
-      .patch(`http://localhost:3000/generic-service/${serviceId}`, {
+      .patch(`${process.env.BASE_URL}/generic-service/${serviceId}`, {
         generic_service: { title: serviceTitle, service_category: serviceCategoryTitle },
       })
       .then((res) => {

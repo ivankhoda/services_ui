@@ -30,7 +30,7 @@ export const CategoryForm = (props: TableProps) => {
   const onSave = (clickedItem: Category) => {
     const categoryId = clickedItem.id;
     axios
-      .patch(`http://localhost:3000/category/${categoryId}`, { category: { title: categoryName } })
+      .patch(`${process.env.BASE_URL}/category/${categoryId}`, { category: { title: categoryName } })
       .then((res) => {
         console.log(res.data);
       })

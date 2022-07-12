@@ -34,7 +34,7 @@ export const ClientForm = (props: TableProps) => {
   const onSave = (clickedItem: Client) => {
     const clientId = clickedItem.id;
     axios
-      .patch(`http://localhost:3000/client/${clientId}`, { client: { name: firstName, surname: lastName } })
+      .patch(`${process.env.BASE_URL}/client/${clientId}`, { client: { name: firstName, surname: lastName } })
       .then((res) => {
         console.log(res.data);
       })

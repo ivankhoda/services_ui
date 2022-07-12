@@ -31,7 +31,7 @@ export const Categories = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const categories = await fetch("http://localhost:3000/categories", {
+      const categories = await fetch(`${process.env.BASE_URL}/categories`, {
         method: "GET",
       });
       const data = await categories.json();
@@ -44,7 +44,7 @@ export const Categories = () => {
   const onDelete = (clickedItem: Category) => {
     const categoryId = clickedItem.id;
     axios
-      .delete(`http://localhost:3000/category/${categoryId}`)
+      .delete(`${process.env.BASE_URL}/category/${categoryId}`)
       .then((res) => {})
       .catch((err) => console.log(err));
     const newArray = categories?.filter((item) => item.id !== clickedItem.id);
@@ -53,7 +53,7 @@ export const Categories = () => {
 
   const onSubmit = () => {
     axios
-      .post(`http://localhost:3000/category/`, { category: { title: title } })
+      .post(`${process.env.BASE_URL}/category/`, { category: { title: title } })
       .then((res) => {
         const newCategory: Category = res.data.message;
         setCategories([...categories, newCategory]);
