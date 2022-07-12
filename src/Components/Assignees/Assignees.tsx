@@ -33,7 +33,7 @@ export const Assignees = () => {
   };
   useEffect(() => {
     const getData = async () => {
-      const assignees = await fetch("http://localhost:3000/assignees", {
+      const assignees = await fetch(`${process.env.BASE_URL}/assignees`, {
         method: "GET",
       });
       const data = await assignees.json();
@@ -46,7 +46,7 @@ export const Assignees = () => {
   const onDelete = (clickedItem: Assignee) => {
     const assigneeId = clickedItem.id;
     axios
-      .delete(`http://localhost:3000/assignee/${assigneeId}`)
+      .delete(`${process.env.BASE_URL}/assignee/${assigneeId}`)
       .then((res) => {})
       .catch((err) => console.log(err));
     const newArray = assignees?.filter((item) => item.id !== clickedItem.id);
@@ -55,7 +55,7 @@ export const Assignees = () => {
 
   const onSubmit = () => {
     axios
-      .post(`http://localhost:3000/assignee/`, { assignee: { name: firstName, surname: lastName } })
+      .post(`${process.env.BASE_URL}/assignee/`, { assignee: { name: firstName, surname: lastName } })
       .then((res) => {
         const newAssignee: Assignee = res.data.message;
         setAssignees([...assignees, newAssignee]);

@@ -98,7 +98,7 @@ export const OrderForm = (props: OrderAttributes) => {
     const assigneeName = `${newAssignee!.name} ${newAssignee!.surname}`;
     console.log(orderServices);
     axios
-      .patch(`http://localhost:3000/order/${orderId}`, {
+      .patch(`${process.env.BASE_URL}/order/${orderId}`, {
         order: {
           client_name: clientName,
           assignee_name: assigneeName,

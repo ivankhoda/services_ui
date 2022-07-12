@@ -53,7 +53,7 @@ export const Services = () => {
   const onDelete = (clickedItem: Service) => {
     const serviceId = clickedItem.id;
     axios
-      .delete(`http://localhost:3000/generic-service/${serviceId}`)
+      .delete(`${process.env.BASE_URL}/generic-service/${serviceId}`)
       .then((res) => {})
       .catch((err) => console.log(err));
     const newArray = services?.filter((item) => item.id !== clickedItem.id);
@@ -62,7 +62,7 @@ export const Services = () => {
 
   const onSubmit = () => {
     axios
-      .post(`http://localhost:3000/generic-service/`, {
+      .post(`${process.env.BASE_URL}/generic-service/`, {
         service: { title: serviceTitle, service_category: serviceCategoryTitle },
       })
       .then((res) => {

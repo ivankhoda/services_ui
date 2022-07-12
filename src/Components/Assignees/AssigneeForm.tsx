@@ -34,7 +34,7 @@ export const AssigneeForm = (props: TableProps) => {
   const onSave = (clickedItem: Assignee) => {
     const assigneeId = clickedItem.id;
     axios
-      .patch(`http://localhost:3000/assignee/${assigneeId}`, { assignee: { name: firstName, surname: lastName } })
+      .patch(`${process.env.BASE_URL}/assignee/${assigneeId}`, { assignee: { name: firstName, surname: lastName } })
       .then((res) => {
         console.log(res.data);
       })
