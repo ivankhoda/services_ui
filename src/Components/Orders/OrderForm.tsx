@@ -130,19 +130,11 @@ export const OrderForm = (props: OrderAttributes) => {
     });
   };
   const handleSelectService = (value) => {
-    console.log(orderServices);
-    console.log(value);
-
-    // const selectedServices: Service[] = [];s
     const newService = genericService.find((service) => service.id === value);
-    console.log(newService);
-    console.log(orderServices);
+
     orderServices.find((orderService) => {
       console.log(orderService.title, newService!.title);
     });
-
-    // newService ? selectedServices.push(newService) : null;
-    // setOrderService([...orderServices, ...selectedServices]);
   };
 
   return (
@@ -189,7 +181,7 @@ export const OrderForm = (props: OrderAttributes) => {
             <Select
               key={i}
               defaultValue={s.title}
-              disabled={!notEditable ? true : false}
+              disabled={true}
               onChange={handleSelectService}
               style={{
                 width: 160,

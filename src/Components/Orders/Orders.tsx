@@ -121,7 +121,7 @@ export const Orders = () => {
 
   const handleSelectAssignee = (value) => {
     const newAssignee = assignees.find((assignee) => assignee.id === value);
-    console.log(newAssignee);
+
     setAssignee({
       name: newAssignee!.name,
       surname: newAssignee!.surname,
@@ -154,11 +154,7 @@ export const Orders = () => {
   };
 
   const sortingData = ["Empty", "Client", "Assignee", "Category"];
-  enum Sort {
-    Client = "client",
-    Assignee = "assignee",
-    Category = "category",
-  }
+
   const sortings = {
     Empty: [],
     Client: clients,
@@ -201,7 +197,7 @@ export const Orders = () => {
       const a = document.createElement("a");
       a.style.display = "none";
       a.href = url;
-      // the filename you want
+
       a.download = filename;
       document.body.appendChild(a);
       a.click();
@@ -217,11 +213,6 @@ export const Orders = () => {
       })
         .then((response) => response.blob())
         .then((blob) => download(blob, "data.xlsx"));
-
-      // then(response.blob().then(blob => download(blob));
-
-      // const data = (await file).body;
-      // console.log(data);
     };
 
     getData();
