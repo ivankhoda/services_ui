@@ -34,10 +34,10 @@ export const Services = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const services = await fetch("http://localhost:3000/generic-services", {
+      const services = await fetch(`${process.env.BASE_URL}/generic-services`, {
         method: "GET",
       });
-      const categories = await fetch("http://localhost:3000/categories", {
+      const categories = await fetch(`${process.env.BASE_URL}categories`, {
         method: "GET",
       });
       const categoriesData = await categories.json();
