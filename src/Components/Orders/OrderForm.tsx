@@ -65,16 +65,16 @@ export const OrderForm = (props: OrderAttributes) => {
 
   useEffect(() => {
     const getData = async () => {
-      const assignees = await fetch("http://localhost:3000/assignees", {
+      const assignees = await fetch(`${process.env.BASE_URL}/assignees`, {
         method: "GET",
       });
-      const services = await fetch("http://localhost:3000/generic-services", {
+      const services = await fetch(`${process.env.BASE_URL}/generic-services`, {
         method: "GET",
       });
-      const clients = await fetch("http://localhost:3000/clients", {
+      const clients = await fetch(`${process.env.BASE_URL}/clients`, {
         method: "GET",
       });
-      const orders = await fetch("http://localhost:3000/orders", {
+      const orders = await fetch(`${process.env.BASE_URL}/orders`, {
         method: "GET",
       });
       const data = await assignees.json();
